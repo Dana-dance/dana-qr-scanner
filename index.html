@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+  <title>DANA QR сканер</title>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      background: #f7f7f7;
+    }
+    button, input {
+      width: 95%;
+      padding: 15px;
+      margin: 10px 0;
+      font-size: 18px;
+      border-radius: 10px;
+      box-sizing: border-box;
+    }
+    button {
+      background: #222;
+      color: white;
+      border: none;
+    }
+    #reader {
+      max-width: 400px;
+      margin: 20px auto;
+    }
+  </style>
+</head>
+<body>
+  <h2>DANA би ансамблі</h2>
+  <h3>QR билет сканері</h3>
+
+  <button onclick="startCamera()">
+    📷 Камераны қосу
+  </button>
+
+  <div id="reader"></div>
+  <p id="result">QR кодты сканерлеңіз</p>
+
+  <script>
+    let scanner;
+    async function startCamera() {
+      try {
+        if (scanner) return;
+        scanner = new Html5Qrcode("reader");
+        await scanner.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: 220 },
+          decodedText => {
+            document.getElementById("result")
+              .textContent = "QR оқылды: " + decodedText;
+            scanner.stop().then(() => {
+              scanner.clear();
+              scanner = null;
+            });
+          }
+        );
+      } catch (error) {
+        document.getElementById("result")
+          .textContent = "Камера қатесі: " + error;
+        scanner = null;
+      }
+    }
+  </script>
+</body>
+</html>
